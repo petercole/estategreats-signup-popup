@@ -1,4 +1,9 @@
-# @estategreats/signup-popup
+# @petercole/signup-popup
+
+> Scoped to `@petercole` because GitHub Packages requires the npm scope to match
+> the repository owner, and Estate Greats has no GitHub org. If an
+> `estategreats` org is ever created, renaming the package is a major version
+> plus a dependency bump in both sites.
 
 The Estate Greats sale-alert signup popup. One implementation, two sites:
 
@@ -20,8 +25,8 @@ Each site supplies only what legitimately differs.
 ## Using it
 
 ```tsx
-import { SignupPopup } from '@estategreats/signup-popup'
-import '@estategreats/signup-popup/styles.css'
+import { SignupPopup } from '@petercole/signup-popup'
+import '@petercole/signup-popup/styles.css'
 
 <SignupPopup
   formAction="/api/offers/sale-alerts"

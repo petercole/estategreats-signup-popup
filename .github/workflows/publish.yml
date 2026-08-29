@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 22
           registry-url: https://npm.pkg.github.com
-          scope: '@estategreats'
+          scope: '@petercole'
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
