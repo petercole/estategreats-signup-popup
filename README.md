@@ -113,9 +113,10 @@ A site that wants a byte-identical render must load Montserrat.
 Both sites install this from a pinned git tag, and a git dependency normally
 builds itself on install via `prepare`. That build is at the mercy of each
 package manager's script-trust policy — bun blocks postinstall scripts by
-default, and a blocked build means a silently empty package. Shipping the built
-output in the tag removes that whole class of failure: npm, bun, pnpm and yarn
-all get a package that is ready to import.
+default and pnpm refuses the install outright unless the package is added to
+`allowBuilds`. Shipping the built output in the tag removes that whole class of
+failure: npm, bun, pnpm and yarn all get a package that is ready to import,
+with no install-time build at all. There is deliberately no `prepare` script.
 
 So `npm run build` before every release, and commit `dist/`.
 
