@@ -24,8 +24,8 @@
 
 import { useId, useRef, useState } from 'react'
 
-import type { SignupPopupAnalyticsHandler } from './analytics'
-import { SMS_DISCLOSURE_COPY, SMS_DISCLOSURE_VERSION, SMS_TERMS_URL, smsConsentError } from './consent'
+import type { SignupPopupAnalyticsHandler } from './analytics.js'
+import { SMS_DISCLOSURE_COPY, SMS_DISCLOSURE_VERSION, SMS_TERMS_URL, smsConsentError } from './consent.js'
 
 export type SignupFormStatus = 'idle' | 'submitting' | 'success' | 'error'
 

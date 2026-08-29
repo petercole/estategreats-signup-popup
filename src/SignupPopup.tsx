@@ -23,14 +23,14 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 
-import type { SignupPopupAnalyticsHandler } from './analytics'
-import { SignupForm, type SignupFormProps } from './SignupForm'
+import type { SignupPopupAnalyticsHandler } from './analytics.js'
+import { SignupForm, type SignupFormProps } from './SignupForm.js'
 import {
   DEFAULT_SCHEDULE,
   useSignupPopupSchedule,
   type SignupPopupSchedule,
   type SignupPopupTrigger,
-} from './schedule'
+} from './schedule.js'
 import {
   isSuppressed,
   markShownThisSession,
@@ -38,7 +38,7 @@ import {
   recordDismissal,
   recordSignup,
   wasShownThisSession,
-} from './storage'
+} from './storage.js'
 
 const CLOSE_ANIMATION_MS = 160
 
