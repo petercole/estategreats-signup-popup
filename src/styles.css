@@ -1,0 +1,370 @@
+/**
+ * @estategreats/signup-popup — popup styles.
+ *
+ * Ported VERBATIM from estate-greats-website `src/app/(frontend)/globals.css`
+ * (the `.sale-alert-signup-modal` / `.sale-alert-signup-form` blocks) so the
+ * popup on estategreats.net does not shift by a pixel when it starts consuming
+ * this package. Do not "clean this up" — the `!important` declarations exist to
+ * win against the legacy WordPress-export theme on estategreats.net, and the
+ * offers site renders the same rules so both stay identical.
+ *
+ * Typography leans on `--font-classic-body` when the host site defines it and
+ * falls back to Montserrat. A consuming site that wants a byte-identical render
+ * must load Montserrat (see README → Fonts).
+ *
+ * Entrance/exit animation and reduced-motion handling are appended at the end
+ * of this file; everything above it is the original, untouched.
+ */
+
+.sale-alert-signup-modal[hidden] {
+  display: none !important;
+}
+
+.sale-alert-signup-modal {
+  align-items: center;
+  background: rgb(8 12 35 / 76%);
+  backdrop-filter: blur(5px);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 1.25rem;
+  position: fixed;
+  z-index: 100000;
+}
+
+.sale-alert-signup-modal__dialog {
+  background: linear-gradient(145deg, rgb(2 131 164 / 15%), transparent 46%), #131a3f;
+  border-radius: 16px;
+  box-shadow:
+    0 28px 80px rgb(0 0 0 / 42%),
+    inset 0 1px 0 rgb(255 255 255 / 8%);
+  color: #ffffff;
+  font-family: var(--font-classic-body), Montserrat, Arial, sans-serif;
+  max-height: min(92vh, 48rem);
+  overflow-y: auto;
+  padding: clamp(1.75rem, 4vw, 2.6rem);
+  position: relative;
+  width: min(100%, 32rem);
+}
+
+.sale-alert-signup-modal__close {
+  align-items: center;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+  color: #ffffff !important;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 2rem !important;
+  height: 2.5rem !important;
+  justify-content: center;
+  line-height: 1 !important;
+  padding: 0 !important;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+  width: 2.5rem !important;
+}
+
+.sale-alert-signup-modal__close:hover,
+.sale-alert-signup-modal__close:focus-visible {
+  background: rgb(255 189 89 / 14%) !important;
+  color: #ffbd59 !important;
+  transform: rotate(4deg);
+}
+
+.sale-alert-signup-modal__close:focus-visible {
+  outline: 2px solid #ffbd59;
+  outline-offset: 2px;
+}
+
+.sale-alert-signup-modal__eyebrow,
+.sale-alert-signup-page__eyebrow {
+  color: #ffbd59;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  margin: 0 3rem 0.7rem 0;
+  text-transform: uppercase;
+}
+
+.sale-alert-signup-modal__dialog h2 {
+  color: #ffffff !important;
+  font-family: var(--font-classic-heading), Arial, sans-serif !important;
+  font-size: clamp(1.65rem, 4vw, 2.15rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.12 !important;
+  margin: 0 2.5rem 0.65rem 0 !important;
+}
+
+.sale-alert-signup-modal__intro {
+  color: rgb(255 255 255 / 82%);
+  font-size: 1rem;
+  line-height: 1.55;
+  margin: 0 0 1.35rem;
+}
+
+.sale-alert-signup-form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.sale-alert-signup-form__honeypot {
+  height: 1px;
+  left: -10000px;
+  overflow: hidden;
+  position: absolute;
+  top: auto;
+  width: 1px;
+}
+
+.sale-alert-signup-form__field {
+  display: grid;
+  gap: 0.42rem;
+}
+
+.sale-alert-signup-form__field > span {
+  color: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.sale-alert-signup-form__field small {
+  color: rgb(255 255 255 / 62%);
+  font: inherit;
+  font-weight: 500;
+}
+
+.sale-alert-signup-form__field input {
+  appearance: none;
+  background: rgb(6 12 37 / 66%) !important;
+  border: 1px solid rgb(255 255 255 / 25%) !important;
+  border-radius: 7px !important;
+  color: #ffffff !important;
+  font: inherit;
+  height: 2.85rem !important;
+  padding: 0 0.9rem !important;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+  width: 100%;
+}
+
+.sale-alert-signup-form__field input:focus {
+  background: rgb(6 12 37 / 84%) !important;
+  border-color: #ffbd59 !important;
+  box-shadow: 0 0 0 4px rgb(255 189 89 / 16%) !important;
+  outline: 0;
+}
+
+.sale-alert-signup-form__sms-consent {
+  align-items: flex-start;
+  color: rgb(255 255 255 / 72%);
+  cursor: pointer;
+  display: grid;
+  font-size: 1rem;
+  gap: 0.65rem;
+  grid-template-columns: 1.1rem minmax(0, 1fr);
+  line-height: 1.5;
+}
+
+.sale-alert-signup-form__sms-consent input {
+  accent-color: #ffbd59;
+  cursor: pointer;
+  height: 1rem;
+  margin: 0.12rem 0 0;
+  width: 1rem;
+}
+
+.sale-alert-signup-form__sms-consent a {
+  color: #ffcf84;
+  font-weight: 700;
+  text-underline-offset: 0.16rem;
+}
+
+.sale-alert-signup-form__sms-consent a:hover,
+.sale-alert-signup-form__sms-consent a:focus-visible {
+  color: #ffffff;
+}
+
+.sale-alert-signup-form__submit {
+  align-items: center;
+  appearance: none;
+  background: #ffbd59 !important;
+  border: 1px solid rgb(255 222 157 / 68%) !important;
+  border-radius: 999px !important;
+  box-shadow:
+    0 8px 24px rgb(255 189 89 / 25%),
+    inset 0 1px 0 rgb(255 255 255 / 28%) !important;
+  color: #16163f !important;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--font-classic-body), Montserrat, Arial, sans-serif !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  justify-content: center;
+  letter-spacing: 0.08em !important;
+  margin-top: 0.2rem;
+  min-height: 3rem !important;
+  padding: 0.75rem 1.4rem !important;
+  text-transform: uppercase;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.sale-alert-signup-form__submit:hover,
+.sale-alert-signup-form__submit:focus-visible {
+  background: #ffc76b !important;
+  box-shadow:
+    0 10px 30px rgb(255 189 89 / 38%),
+    0 0 22px rgb(255 189 89 / 18%) !important;
+  transform: translateY(-1px);
+}
+
+.sale-alert-signup-form__submit:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+.sale-alert-signup-form__submit:disabled {
+  cursor: wait;
+  opacity: 0.7;
+  transform: none;
+}
+
+.sale-alert-signup-form__status,
+.sale-alert-signup-form__privacy {
+  font-size: 1rem;
+  line-height: 1.45;
+  margin: 0;
+  text-align: center;
+}
+
+.sale-alert-signup-form__status:empty {
+  display: none;
+}
+
+.sale-alert-signup-form__status[data-state='success'] {
+  color: #a9ead8;
+}
+
+.sale-alert-signup-form__status[data-state='error'] {
+  color: #ffd0cd;
+}
+
+.sale-alert-signup-form__privacy {
+  color: rgb(255 255 255 / 58%);
+}
+
+.sale-alert-signup-modal__page-link {
+  color: #ffcf84;
+  display: block;
+  font-family: var(--font-classic-body), Montserrat, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 1rem auto 0;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 0.22rem;
+  width: fit-content;
+}
+
+.sale-alert-signup-modal__page-link:hover,
+.sale-alert-signup-modal__page-link:focus-visible {
+  color: #ffffff;
+}
+
+@media (max-width: 48rem) {
+  .sale-alert-signup-modal {
+    align-items: flex-end;
+    padding: 0.75rem;
+  }
+
+  .sale-alert-signup-modal__dialog {
+    border-radius: 16px 16px 10px 10px;
+    max-height: calc(100vh - 1.5rem);
+    padding: 1.55rem 1.25rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Entrance / exit animation. The original popup snapped open because it was
+ * only ever opened by a deliberate button press. An auto-scheduled popup needs
+ * to announce itself more gently, so the overlay fades and the dialog rises.
+ * Exit is driven by `data-state="closing"`, which the component sets for the
+ * animation's duration before it unmounts.
+ * ------------------------------------------------------------------------- */
+
+@keyframes eg-signup-popup-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes eg-signup-popup-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.sale-alert-signup-modal {
+  animation: eg-signup-popup-overlay-in 200ms ease-out both;
+}
+
+.sale-alert-signup-modal__dialog {
+  animation: eg-signup-popup-dialog-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.sale-alert-signup-modal[data-state='closing'] {
+  animation-direction: reverse;
+  animation-duration: 160ms;
+}
+
+.sale-alert-signup-modal[data-state='closing'] .sale-alert-signup-modal__dialog {
+  animation-direction: reverse;
+  animation-duration: 160ms;
+}
+
+/* Closing must feel immediate, so the overlay stops taking clicks the moment
+ * the close is requested — the fade is decoration, not a delay. */
+.sale-alert-signup-modal[data-state='closing'] {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sale-alert-signup-modal,
+  .sale-alert-signup-modal__dialog,
+  .sale-alert-signup-modal[data-state='closing'],
+  .sale-alert-signup-modal[data-state='closing'] .sale-alert-signup-modal__dialog {
+    animation: none !important;
+  }
+
+  .sale-alert-signup-form__submit,
+  .sale-alert-signup-modal__close {
+    transition: none !important;
+  }
+
+  .sale-alert-signup-form__submit:hover,
+  .sale-alert-signup-form__submit:focus-visible,
+  .sale-alert-signup-modal__close:hover,
+  .sale-alert-signup-modal__close:focus-visible {
+    transform: none !important;
+  }
+}
