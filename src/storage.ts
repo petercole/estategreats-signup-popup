@@ -28,9 +28,22 @@ export type SuppressionState = {
 const EMPTY: SuppressionState = { dismissedAt: null, signedUp: false }
 
 function storage(): Storage | null {
+  return guarded(() => window.localStorage)
+}
+
+/**
+ * Session storage backs the once-per-session rule. Deliberately a DIFFERENT
+ * store from the suppression above: "I already saw this today" should die with
+ * the tab, while "I dismissed it" and "I signed up" must outlive it.
+ */
+function sessionStore(): Storage | null {
+  return guarded(() => window.sessionStorage)
+}
+
+function guarded(pick: () => Storage): Storage | null {
   try {
     if (typeof window === 'undefined') return null
-    const probe = window.localStorage
+    const probe = pick()
     // Touch it — merely reading `window.localStorage` does not throw in every
     // browser that has it disabled, but using it does.
     const key = '__eg_signup_probe__'
@@ -39,6 +52,35 @@ function storage(): Storage | null {
     return probe
   } catch {
     return null
+  }
+}
+
+/**
+ * Once per session, however the visitor got here.
+ *
+ * The in-component "already fired" ref only survives as long as the component
+ * does, so a reload or a fresh tab re-armed the timer and someone reading three
+ * pages could be interrupted three times. This is the memory that outlives a
+ * reload but not the browser session — the popup asks once, then leaves you
+ * alone until you come back another day.
+ */
+export function wasShownThisSession(namespace: string): boolean {
+  const store = sessionStore()
+  if (!store) return false
+  try {
+    return store.getItem(`${namespace}:shown`) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function markShownThisSession(namespace: string): void {
+  const store = sessionStore()
+  if (!store) return
+  try {
+    store.setItem(`${namespace}:shown`, '1')
+  } catch {
+    // Session storage disabled — the popup falls back to once per page view.
   }
 }
 

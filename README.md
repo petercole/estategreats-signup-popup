@@ -57,8 +57,19 @@ import '@petercole/signup-popup/styles.css'
 | Desktop exit intent | only after 15s |
 | Embedded signup on screen | never show |
 | Checkout / cart / payment / account / login / admin | never show |
+| Already shown in this browser session | never show again this session |
 | After a dismissal | quiet for 14 days |
 | After a signup | quiet permanently |
+
+Three separate memories, on purpose:
+
+- **shown this session** — `sessionStorage`, dies with the tab. Stops a reload
+  or a click through to a second page from asking the same person twice.
+- **dismissed** — `localStorage`, 14 days. They said no.
+- **signed up** — `localStorage`, permanent. They said yes; never ask again.
+
+A site opening the popup itself (`open`) bypasses all three — a visitor who just
+clicked "get sale alerts" must always get the form.
 
 Closing is immediate through both the close button and Escape; the fade is
 decoration and never delays the close.

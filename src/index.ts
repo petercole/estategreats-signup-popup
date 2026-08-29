@@ -18,9 +18,11 @@ export {
 export type { SmsConsentInput } from './consent'
 export {
   isSuppressed,
+  markShownThisSession,
   readSuppression,
   recordDismissal,
   recordSignup,
+  wasShownThisSession,
 } from './storage'
 export type { SuppressionState } from './storage'
 export type {

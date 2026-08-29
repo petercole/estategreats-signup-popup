@@ -1,6 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { isSuppressed, readSuppression, recordDismissal, recordSignup } from '../src/storage'
+import {
+  isSuppressed,
+  markShownThisSession,
+  readSuppression,
+  recordDismissal,
+  recordSignup,
+  wasShownThisSession,
+} from '../src/storage'
 
 const NS = 'estate-greats-test-signup'
 const DAY = 86_400_000
@@ -52,6 +59,46 @@ describe('suppression storage', () => {
     })
     expect(() => recordDismissal(NS)).not.toThrow()
     expect(readSuppression(NS)).toEqual({ dismissedAt: null, signedUp: false })
+    spy.mockRestore()
+  })
+})
+
+describe('once per session', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear()
+  })
+
+  it('remembers within the session that the visitor was already asked', () => {
+    expect(wasShownThisSession(NS)).toBe(false)
+    markShownThisSession(NS)
+    expect(wasShownThisSession(NS)).toBe(true)
+  })
+
+  it('keeps each site separate here too', () => {
+    markShownThisSession('estate-greats-signup')
+    expect(wasShownThisSession('estate-greats-offers-signup')).toBe(false)
+  })
+
+  it('does not leak into the durable suppression', () => {
+    // "Already asked in this tab" must not read as "dismissed" — otherwise
+    // closing the tab and coming back tomorrow would still be suppressed for
+    // 14 days without the visitor ever having said no.
+    markShownThisSession(NS)
+    expect(readSuppression(NS)).toEqual({ dismissedAt: null, signedUp: false })
+  })
+
+  it('forgets when the session storage is cleared, as a new session would', () => {
+    markShownThisSession(NS)
+    window.sessionStorage.clear()
+    expect(wasShownThisSession(NS)).toBe(false)
+  })
+
+  it('never throws when session storage is blocked', () => {
+    const spy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('SecurityError: storage disabled')
+    })
+    expect(() => markShownThisSession(NS)).not.toThrow()
+    expect(wasShownThisSession(NS)).toBe(false)
     spy.mockRestore()
   })
 })

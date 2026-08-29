@@ -31,7 +31,14 @@ import {
   type SignupPopupSchedule,
   type SignupPopupTrigger,
 } from './schedule'
-import { isSuppressed, readSuppression, recordDismissal, recordSignup } from './storage'
+import {
+  isSuppressed,
+  markShownThisSession,
+  readSuppression,
+  recordDismissal,
+  recordSignup,
+  wasShownThisSession,
+} from './storage'
 
 const CLOSE_ANIMATION_MS = 160
 
@@ -101,13 +108,16 @@ export function SignupPopup({
   const resolvedSchedule = resolveSchedule(schedule)
   const open = (controlledOpen ?? false) || autoOpen
 
-  // Suppression is read on the client only — reading localStorage during
-  // render would desync hydration.
+  // Suppression is read on the client only — reading storage during render
+  // would desync hydration. Two separate reasons to stay quiet:
+  //   suppressed — dismissed recently, or signed up (survives the session)
+  //   shownThisSession — already asked once in this tab (dies with it)
   const [suppressed, setSuppressed] = useState(true)
   useEffect(() => {
     if (!resolvedSchedule) return
     setSuppressed(
-      isSuppressed(readSuppression(storageNamespace), resolvedSchedule.dismissDays),
+      isSuppressed(readSuppression(storageNamespace), resolvedSchedule.dismissDays) ||
+        wasShownThisSession(storageNamespace),
     )
   }, [resolvedSchedule, storageNamespace])
 
@@ -136,10 +146,13 @@ export function SignupPopup({
 
   const onScheduleTrigger = useCallback(
     (trigger: SignupPopupTrigger) => {
+      // Mark BEFORE opening: if the visitor reloads the page while the popup is
+      // on screen, they have already been asked and should not be asked again.
+      markShownThisSession(storageNamespace)
       setAutoOpen(true)
       onAnalyticsEvent?.({ name: 'signup_popup_shown', source, trigger })
     },
-    [onAnalyticsEvent, source],
+    [onAnalyticsEvent, source, storageNamespace],
   )
 
   useSignupPopupSchedule({

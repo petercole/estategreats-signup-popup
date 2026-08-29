@@ -28,6 +28,7 @@ function jsonResponse(body: unknown, ok = true) {
 
 beforeEach(() => {
   window.localStorage.clear()
+  window.sessionStorage.clear()
   vi.useRealTimers()
 })
 
@@ -281,5 +282,69 @@ describe('SignupPopup — scheduling', () => {
       close.click()
     })
     expect(readSuppression(NS).dismissedAt).not.toBeNull()
+  })
+})
+
+describe('SignupPopup — never pester someone twice', () => {
+  it('never opens again once the visitor has signed up', () => {
+    vi.useFakeTimers()
+    // What recordSignup() writes after a successful submission.
+    window.localStorage.setItem(NS, JSON.stringify({ dismissedAt: Date.now(), signedUp: true }))
+
+    renderPopup({ schedule: true })
+    act(() => {
+      vi.advanceTimersByTime(600_000)
+    })
+    expect(document.querySelector('.sale-alert-signup-modal')?.hasAttribute('hidden')).toBe(true)
+  })
+
+  it('stays gone after a signup even a year later', () => {
+    vi.useFakeTimers()
+    window.localStorage.setItem(
+      NS,
+      JSON.stringify({ dismissedAt: Date.now() - 400 * 86_400_000, signedUp: true }),
+    )
+    renderPopup({ schedule: true })
+    act(() => {
+      vi.advanceTimersByTime(600_000)
+    })
+    expect(document.querySelector('.sale-alert-signup-modal')?.hasAttribute('hidden')).toBe(true)
+  })
+
+  it('shows once per session, not once per page view', () => {
+    vi.useFakeTimers()
+    // First page: the popup appears.
+    const first = renderPopup({ schedule: true })
+    act(() => {
+      vi.advanceTimersByTime(31_000)
+    })
+    expect(document.querySelector('.sale-alert-signup-modal')?.hasAttribute('hidden')).toBe(false)
+    first.unmount()
+
+    // Second page in the same session — a reload, or a click through to
+    // another sale. Same visitor, same tab: do not ask again.
+    renderPopup({ schedule: true })
+    act(() => {
+      vi.advanceTimersByTime(600_000)
+    })
+    expect(document.querySelector('.sale-alert-signup-modal')?.hasAttribute('hidden')).toBe(true)
+  })
+
+  it('marks the session as asked the moment it opens, before any interaction', () => {
+    vi.useFakeTimers()
+    renderPopup({ schedule: true })
+    act(() => {
+      vi.advanceTimersByTime(31_000)
+    })
+    // Reloading while the popup is on screen must not re-arm it.
+    expect(window.sessionStorage.getItem(`${NS}:shown`)).toBe('1')
+  })
+
+  it('still opens on demand when the site asks it to, session flag or not', () => {
+    // The main site's banner button is a deliberate request. "Already shown"
+    // must never block someone who just clicked "get sale alerts".
+    window.sessionStorage.setItem(`${NS}:shown`, '1')
+    renderPopup({ open: true, schedule: true })
+    expect(document.querySelector('.sale-alert-signup-modal')?.hasAttribute('hidden')).toBe(false)
   })
 })
