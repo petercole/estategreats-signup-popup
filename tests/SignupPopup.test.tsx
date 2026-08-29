@@ -58,6 +58,7 @@ describe('SignupPopup — controlled mode (how estategreats.net drives it)', () 
     expect(screen.getByRole('link', { name: /Privacy & SMS terms/i })).toBeVisible()
     expect(screen.getByText(/Useful sale news only/i)).toBeVisible()
     expect(screen.getByRole('heading', { name: 'Be First Through the Door' })).toBeVisible()
+    expect(screen.getByText('Get text or email alerts for upcoming estate sales.')).toBeVisible()
   })
 })
 
