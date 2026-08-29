@@ -138,6 +138,12 @@ export function SignupPopup({
     (reason: 'dismissed' | 'signed-up') => {
       if (reason === 'dismissed' && resolvedSchedule) recordDismissal(storageNamespace)
       if (reason === 'dismissed') onAnalyticsEvent?.({ name: 'signup_popup_dismissed', source })
+      // Stop the schedule for the rest of this page's life. `suppressed` is
+      // only read from storage on mount, so without this the scroll and timer
+      // listeners re-arm the moment the popup closes and the visitor gets it
+      // again on their next scroll. Asking once and taking no for an answer is
+      // the entire point of the suppression rules.
+      setSuppressed(true)
       setClosing(true)
       setAutoOpen(false)
       onClose?.()
@@ -162,6 +168,8 @@ export function SignupPopup({
       // Mark BEFORE opening: if the visitor reloads the page while the popup is
       // on screen, they have already been asked and should not be asked again.
       markShownThisSession(storageNamespace)
+      // And stop the schedule immediately, so nothing can queue a second open.
+      setSuppressed(true)
       setAutoOpen(true)
       onAnalyticsEvent?.({ name: 'signup_popup_shown', source, trigger })
     },

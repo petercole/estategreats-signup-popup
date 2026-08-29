@@ -371,3 +371,69 @@ describe('SignupPopup — the host can style the portal root', () => {
     expect(document.querySelector('.sale-alert-signup-modal')).not.toBeNull()
   })
 })
+
+describe('SignupPopup — asks once, then stops', () => {
+  const isOpen = () =>
+    document.querySelector('.sale-alert-signup-modal')?.hasAttribute('hidden') === false
+
+  it('does NOT reappear on the next scroll after the visitor closes it', () => {
+    // The bug: `suppressed` is only read from storage on mount, so closing the
+    // popup re-armed the scroll and timer listeners and the visitor got it
+    // again on every scroll.
+    vi.useFakeTimers()
+    renderPopup({ schedule: true })
+
+    act(() => {
+      vi.advanceTimersByTime(31_000)
+    })
+    expect(isOpen()).toBe(true)
+
+    act(() => {
+      screen.getByRole('button', { name: /close sale alerts signup/i }).click()
+      vi.advanceTimersByTime(500)
+    })
+    expect(isOpen()).toBe(false)
+
+    // Scroll, and scroll again, and wait out another full timer.
+    act(() => {
+      window.dispatchEvent(new Event('scroll'))
+      vi.advanceTimersByTime(60_000)
+      window.dispatchEvent(new Event('scroll'))
+      vi.advanceTimersByTime(60_000)
+    })
+    expect(isOpen(), 'popup reopened after being dismissed').toBe(false)
+  })
+
+  it('does not reappear after a successful signup either', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      jsonResponse({ message: 'You are on the list.', success: true }),
+    )
+    const user = userEvent.setup()
+    renderPopup({ open: true, schedule: true })
+
+    await user.type(screen.getByLabelText(/first name/i), 'Dana')
+    await user.type(screen.getByLabelText(/email address/i), 'dana@example.com')
+    await user.click(screen.getByRole('button', { name: 'Send me sale alerts' }))
+    await screen.findByText('You are on the list.')
+
+    expect(readSuppression(NS).signedUp).toBe(true)
+  })
+
+  it('arms the schedule only once, even across many scrolls before it opens', () => {
+    vi.useFakeTimers()
+    const onAnalyticsEvent = vi.fn()
+    renderPopup({ onAnalyticsEvent, schedule: true })
+
+    act(() => {
+      vi.advanceTimersByTime(31_000)
+      window.dispatchEvent(new Event('scroll'))
+      vi.advanceTimersByTime(31_000)
+      window.dispatchEvent(new Event('scroll'))
+    })
+
+    const shown = onAnalyticsEvent.mock.calls.filter(
+      (c) => (c[0] as { name: string }).name === 'signup_popup_shown',
+    )
+    expect(shown, 'reported shown more than once').toHaveLength(1)
+  })
+})
