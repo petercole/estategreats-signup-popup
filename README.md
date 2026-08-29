@@ -108,15 +108,26 @@ plus anything in `audienceFields`.
 Styling asks for `--font-classic-body` and falls back to Montserrat, then Arial.
 A site that wants a byte-identical render must load Montserrat.
 
+## Why `dist/` is committed
+
+Both sites install this from a pinned git tag, and a git dependency normally
+builds itself on install via `prepare`. That build is at the mercy of each
+package manager's script-trust policy — bun blocks postinstall scripts by
+default, and a blocked build means a silently empty package. Shipping the built
+output in the tag removes that whole class of failure: npm, bun, pnpm and yarn
+all get a package that is ready to import.
+
+So `npm run build` before every release, and commit `dist/`.
+
 ## Releasing
 
 1. Make the change, add a test, `npm test`.
-2. Bump the version in `package.json` (semver: fixes patch, new props minor,
+2. **`npm run build` and commit `dist/`.**
+3. Bump the version in `package.json` (semver: fixes patch, new props minor,
    changed markup or removed props major — both sites render the same markup, so
    a markup change is a visible change on two production sites).
-3. `git tag vX.Y.Z && git push --tags` — the publish workflow pushes it to
-   GitHub Packages.
-4. Bump the dependency in both site repos and deploy each.
+4. `git tag vX.Y.Z && git push --tags`.
+5. Bump the pinned tag in both site repos and deploy each.
 
 Both sites pin an exact version. Never point either at a branch, a tag that can
 move, or an unversioned remote script: a bad publish would otherwise change two
