@@ -2,7 +2,7 @@
  * Durable, per-site suppression state.
  *
  * Two states worth remembering about a visitor:
- *   - they dismissed the popup  → leave them alone for `dismissDays`
+ *   - they dismissed the popup  → leave them alone for `dismissDays` (1 day)
  *   - they signed up            → never show it again
  *
  * Storage is first-party localStorage under a namespace the consuming site

@@ -8,7 +8,10 @@
  * day after you closed it costs more goodwill than the signup is worth. So:
  * wait until someone has actually read something (time OR scroll), never
  * interrupt a transaction, never compete with a signup form already on screen,
- * and take "no" for an answer for two weeks.
+ * and take "no" for an answer for a day. A day is long enough that closing it
+ * clears your path through the site, and short enough that a buyer who comes
+ * back next weekend for a different sale gets the offer again. Signing up is
+ * the permanent answer.
  *
  * The defaults below are the shared defaults for both sites. A site can
  * override any of them, but should have a reason.
@@ -44,7 +47,7 @@ export const DEFAULT_SCHEDULE: SignupPopupSchedule = {
   mobileDelaySeconds: 45,
   mobileScrollFraction: 0.6,
   exitIntentAfterSeconds: 15,
-  dismissDays: 14,
+  dismissDays: 1,
   embeddedSignupSelector: '[data-eg-embedded-signup]',
   blockedPathPrefixes: [
     '/checkout',

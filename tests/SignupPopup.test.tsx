@@ -259,11 +259,11 @@ describe('SignupPopup — scheduling', () => {
     embedded.remove()
   })
 
-  it('honours a dismissal for 14 days', () => {
+  it('honours a dismissal for a day', () => {
     vi.useFakeTimers()
     window.localStorage.setItem(
       NS,
-      JSON.stringify({ dismissedAt: Date.now() - 3 * 86_400_000, signedUp: false }),
+      JSON.stringify({ dismissedAt: Date.now() - 2 * 3_600_000, signedUp: false }),
     )
     renderPopup({ schedule: true })
     act(() => {

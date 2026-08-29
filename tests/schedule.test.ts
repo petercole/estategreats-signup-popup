@@ -9,7 +9,7 @@ describe('display rules', () => {
     expect(DEFAULT_SCHEDULE.mobileDelaySeconds).toBe(45)
     expect(DEFAULT_SCHEDULE.mobileScrollFraction).toBe(0.6)
     expect(DEFAULT_SCHEDULE.exitIntentAfterSeconds).toBe(15)
-    expect(DEFAULT_SCHEDULE.dismissDays).toBe(14)
+    expect(DEFAULT_SCHEDULE.dismissDays).toBe(1)
   })
 
   it('never interrupts a transaction or an account flow', () => {
