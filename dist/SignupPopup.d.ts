@@ -27,5 +27,16 @@ export type SignupPopupProps = Pick<SignupFormProps, 'audienceFields' | 'buttonL
         href: string;
         label: string;
     };
+    /**
+     * Class name and inline style for the popup's ROOT element.
+     *
+     * The popup portals into document.body, so it sits outside whatever wrapper
+     * the host site puts its font/theme variables on and inherits nothing from
+     * it. A site that scopes its fonts to a subtree (a Next.js route group with
+     * next/font variable classes, say) passes them here so the popup renders in
+     * the site's own typeface instead of falling through to the app default.
+     */
+    className?: string;
+    style?: React.CSSProperties;
 };
-export declare function SignupPopup({ audienceFields, buttonLabel, eyebrow, footerLink, formAction, heading, intro, onAnalyticsEvent, onClose, open: controlledOpen, privacyUrl, schedule, source, sourcePath, storageNamespace, }: SignupPopupProps): import("react").ReactPortal | null;
+export declare function SignupPopup({ audienceFields, buttonLabel, className, eyebrow, footerLink, formAction, heading, intro, onAnalyticsEvent, onClose, open: controlledOpen, privacyUrl, schedule, source, sourcePath, storageNamespace, style, }: SignupPopupProps): import("react").ReactPortal | null;

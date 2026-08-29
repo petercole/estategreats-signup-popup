@@ -35,7 +35,7 @@ function resolveSchedule(schedule) {
         return DEFAULT_SCHEDULE;
     return { ...DEFAULT_SCHEDULE, ...schedule };
 }
-export function SignupPopup({ audienceFields, buttonLabel, eyebrow = 'Estate Greats Sale Alerts', footerLink, formAction, heading = 'Be First Through the Door', intro = 'Get an email when a new Nashville-area estate sale goes live.', onAnalyticsEvent, onClose, open: controlledOpen, privacyUrl, schedule, source, sourcePath, storageNamespace, }) {
+export function SignupPopup({ audienceFields, buttonLabel, className, eyebrow = 'Estate Greats Sale Alerts', footerLink, formAction, heading = 'Be First Through the Door', intro = 'Get an email when a new Nashville-area estate sale goes live.', onAnalyticsEvent, onClose, open: controlledOpen, privacyUrl, schedule, source, sourcePath, storageNamespace, style, }) {
     const modalRef = useRef(null);
     const [autoOpen, setAutoOpen] = useState(false);
     const [closing, setClosing] = useState(false);
@@ -127,7 +127,7 @@ export function SignupPopup({ audienceFields, buttonLabel, eyebrow = 'Estate Gre
         };
     }, [open, requestClose]);
     const visible = open || closing;
-    const modal = (_jsx("div", { className: "sale-alert-signup-modal", "data-state": closing ? 'closing' : open ? 'open' : undefined, hidden: !visible, onMouseDown: (event) => {
+    const modal = (_jsx("div", { className: className ? `sale-alert-signup-modal ${className}` : 'sale-alert-signup-modal', style: style, "data-state": closing ? 'closing' : open ? 'open' : undefined, hidden: !visible, onMouseDown: (event) => {
             if (event.target === event.currentTarget)
                 requestClose('dismissed');
         }, ref: modalRef, children: _jsxs("section", { "aria-labelledby": "sale-alert-signup-modal-title", "aria-modal": "true", className: "sale-alert-signup-modal__dialog", id: "sale-alert-signup-modal", role: "dialog", children: [_jsx("button", { "aria-label": "Close sale alerts signup", className: "sale-alert-signup-modal__close", onClick: () => requestClose('dismissed'), type: "button", children: _jsx("span", { "aria-hidden": "true", children: "\u00D7" }) }), _jsx("p", { className: "sale-alert-signup-modal__eyebrow", children: eyebrow }), _jsx("h2", { id: "sale-alert-signup-modal-title", children: heading }), _jsx("p", { className: "sale-alert-signup-modal__intro", children: intro }), _jsx(SignupForm, { audienceFields: audienceFields, buttonLabel: buttonLabel, formAction: formAction, onAnalyticsEvent: onAnalyticsEvent, onSuccess: onSignupSuccess, privacyUrl: privacyUrl, source: source, sourcePath: sourcePath }), footerLink ? (_jsx("a", { className: "sale-alert-signup-modal__page-link", href: footerLink.href, onClick: () => requestClose('dismissed'), children: footerLink.label })) : null] }) }));

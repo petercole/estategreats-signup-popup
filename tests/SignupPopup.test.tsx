@@ -348,3 +348,26 @@ describe('SignupPopup — never pester someone twice', () => {
     expect(document.querySelector('.sale-alert-signup-modal')?.hasAttribute('hidden')).toBe(false)
   })
 })
+
+describe('SignupPopup — the host can style the portal root', () => {
+  it('merges a className onto the popup root so scoped font variables reach it', () => {
+    // The popup portals into document.body, outside whatever wrapper the host
+    // puts its font variables on. Without this it inherits the host app's
+    // default typeface — which is exactly how the offers site ended up
+    // rendering it in the staff app's font.
+    renderPopup({ className: 'site-font-vars', open: true })
+    const root = document.querySelector('.sale-alert-signup-modal')
+    expect(root?.classList.contains('site-font-vars')).toBe(true)
+  })
+
+  it('applies an inline style to the popup root', () => {
+    renderPopup({ open: true, style: { zIndex: 42 } })
+    const root = document.querySelector<HTMLElement>('.sale-alert-signup-modal')
+    expect(root?.style.zIndex).toBe('42')
+  })
+
+  it('still renders without either', () => {
+    renderPopup({ open: true })
+    expect(document.querySelector('.sale-alert-signup-modal')).not.toBeNull()
+  })
+})

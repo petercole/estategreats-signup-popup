@@ -72,6 +72,17 @@ export type SignupPopupProps = Pick<
   intro?: string
   /** Optional link under the form, e.g. to a full signup page. */
   footerLink?: { href: string; label: string }
+  /**
+   * Class name and inline style for the popup's ROOT element.
+   *
+   * The popup portals into document.body, so it sits outside whatever wrapper
+   * the host site puts its font/theme variables on and inherits nothing from
+   * it. A site that scopes its fonts to a subtree (a Next.js route group with
+   * next/font variable classes, say) passes them here so the popup renders in
+   * the site's own typeface instead of falling through to the app default.
+   */
+  className?: string
+  style?: React.CSSProperties
 }
 
 function resolveSchedule(
@@ -85,6 +96,7 @@ function resolveSchedule(
 export function SignupPopup({
   audienceFields,
   buttonLabel,
+  className,
   eyebrow = 'Estate Greats Sale Alerts',
   footerLink,
   formAction,
@@ -98,6 +110,7 @@ export function SignupPopup({
   source,
   sourcePath,
   storageNamespace,
+  style,
 }: SignupPopupProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const [autoOpen, setAutoOpen] = useState(false)
@@ -214,7 +227,8 @@ export function SignupPopup({
 
   const modal = (
     <div
-      className="sale-alert-signup-modal"
+      className={className ? `sale-alert-signup-modal ${className}` : 'sale-alert-signup-modal'}
+      style={style}
       data-state={closing ? 'closing' : open ? 'open' : undefined}
       hidden={!visible}
       onMouseDown={(event) => {
