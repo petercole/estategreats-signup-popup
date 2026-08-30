@@ -383,6 +383,12 @@
  * ------------------------------------------------------------------------- */
 
 .eg-signup-inline {
+  /* Size against the panel's OWN width, not the viewport. This component sits
+   * in a wide homepage section on one site and a ~400px footer column on the
+   * other; keying the breakpoint to the viewport left the two fields side by
+   * side in the narrow column, truncating "Your email address" to "Your email
+   * ad…". */
+  container-type: inline-size;
   background: linear-gradient(135deg, #16163f 0%, #026d89 100%);
   border-radius: 16px;
   color: #ffffff;
@@ -563,10 +569,20 @@
   color: #ffc9c2;
 }
 
-/* One column on a phone: two 3.55rem fields side by side leaves neither
- * readable, and the placeholder text is the only label these fields have. */
-@media (max-width: 34rem) {
+/* One column whenever the panel itself is narrow: two fields side by side
+ * leaves neither readable, and the placeholder is the only label these fields
+ * have. Container query first; the media query is the fallback for browsers
+ * without container support, keyed to the viewport as a rough proxy. */
+@container (max-width: 30rem) {
   .eg-signup-inline__form {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (max-width: 34rem) {
+    .eg-signup-inline__form {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 }
