@@ -27,10 +27,8 @@ export type SmsConsentInput = {
     smsConsent: boolean;
 };
 /**
- * The states that are never allowed:
- *   - a phone number with no consent (we may not text it)
- *   - consent with no phone number (nothing to text)
- *   - consent with a number that cannot be a real mobile
+ * Every sale-alert signup requires both a mobile number and affirmative SMS
+ * consent. A number that cannot be a real mobile is also rejected.
  *
  * Returns an error message for display, or undefined when the pair is valid.
  */

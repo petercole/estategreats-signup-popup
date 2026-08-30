@@ -51,9 +51,10 @@ describe('SignupPopup — controlled mode (how estategreats.net drives it)', () 
     renderPopup({ open: true })
     expect(screen.getByLabelText(/first name/i)).toBeRequired()
     expect(screen.getByLabelText(/email address/i)).toBeRequired()
-    expect(screen.getByLabelText(/mobile phone/i)).not.toBeRequired()
+    expect(screen.getByLabelText(/mobile phone/i)).toBeRequired()
     const consent = screen.getByRole('checkbox')
     expect(consent).not.toBeChecked()
+    expect(consent).toBeRequired()
     expect(screen.getByRole('button', { name: 'Send me sale alerts' })).toBeVisible()
     expect(screen.getByRole('link', { name: /Privacy & SMS terms/i })).toBeVisible()
     expect(screen.getByText(/Useful sale news only/i)).toBeVisible()
@@ -136,7 +137,7 @@ describe('SignupPopup — dialog behavior', () => {
 })
 
 describe('SignupPopup — submission states', () => {
-  it('refuses a phone number without consent and never calls the server', async () => {
+  it('requires consent for a phone number and never calls the server', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch')
     const user = userEvent.setup()
     renderPopup({ open: true })
@@ -146,7 +147,7 @@ describe('SignupPopup — submission states', () => {
     await user.type(screen.getByLabelText(/mobile phone/i), '6155550134')
     await user.click(screen.getByRole('button', { name: 'Send me sale alerts' }))
 
-    expect(await screen.findByText(/permission box/i)).toBeVisible()
+    expect(screen.getByRole('checkbox')).toBeInvalid()
     expect(fetchSpy).not.toHaveBeenCalled()
   })
 
@@ -160,12 +161,14 @@ describe('SignupPopup — submission states', () => {
 
     await user.type(screen.getByLabelText(/first name/i), 'Dana')
     await user.type(screen.getByLabelText(/email address/i), 'dana@example.com')
+    await user.type(screen.getByLabelText(/mobile phone/i), '6155550134')
+    await user.click(screen.getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Send me sale alerts' }))
 
     expect(await screen.findByText('You are on the list.')).toBeVisible()
     expect(readSuppression(NS).signedUp).toBe(true)
     expect(onAnalyticsEvent).toHaveBeenCalledWith(
-      expect.objectContaining({ eventId: 'evt_1', name: 'signup_popup_signup', smsConsent: false }),
+      expect.objectContaining({ eventId: 'evt_1', name: 'signup_popup_signup', smsConsent: true }),
     )
   })
 
@@ -178,6 +181,8 @@ describe('SignupPopup — submission states', () => {
 
     await user.type(screen.getByLabelText(/first name/i), 'Dana')
     await user.type(screen.getByLabelText(/email address/i), 'dana@example.com')
+    await user.type(screen.getByLabelText(/mobile phone/i), '6155550134')
+    await user.click(screen.getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Send me sale alerts' }))
 
     expect(await screen.findByText('That email looks wrong.')).toBeVisible()
@@ -414,6 +419,8 @@ describe('SignupPopup — asks once, then stops', () => {
 
     await user.type(screen.getByLabelText(/first name/i), 'Dana')
     await user.type(screen.getByLabelText(/email address/i), 'dana@example.com')
+    await user.type(screen.getByLabelText(/mobile phone/i), '6155550134')
+    await user.click(screen.getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Send me sale alerts' }))
     await screen.findByText('You are on the list.')
 

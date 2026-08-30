@@ -23,22 +23,20 @@ export const SMS_DISCLOSURE_COPY = 'Yes, text me about upcoming Estate Greats sa
  */
 export const SMS_TERMS_URL = 'https://estategreats.net/privacy#sms-alerts';
 /**
- * The states that are never allowed:
- *   - a phone number with no consent (we may not text it)
- *   - consent with no phone number (nothing to text)
- *   - consent with a number that cannot be a real mobile
+ * Every sale-alert signup requires both a mobile number and affirmative SMS
+ * consent. A number that cannot be a real mobile is also rejected.
  *
  * Returns an error message for display, or undefined when the pair is valid.
  */
 export function smsConsentError({ phone, smsConsent }) {
-    if (phone && !smsConsent) {
-        return 'Please check the text-alert permission box, or remove your mobile number.';
-    }
-    if (smsConsent && !phone) {
+    if (!phone) {
         return 'Please enter the mobile number where you want to receive text alerts.';
     }
+    if (!smsConsent) {
+        return 'Please check the text-alert permission box to sign up for sale alerts.';
+    }
     const digits = phone.replace(/\D/g, '');
-    if (smsConsent && (digits.length < 10 || digits.length > 15)) {
+    if (digits.length < 10 || digits.length > 15) {
         return 'Please enter a valid mobile number for text alerts.';
     }
     return undefined;

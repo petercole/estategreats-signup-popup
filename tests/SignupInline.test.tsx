@@ -15,10 +15,10 @@ function renderInline(props: Partial<React.ComponentProps<typeof SignupInline>> 
 const ok = (body: unknown) => ({ ok: true, json: async () => body }) as Response
 
 describe('SignupInline — matches the homepage form', () => {
-  it('asks for email and an optional mobile, and nothing else', () => {
+  it('requires email and mobile, and asks for nothing else', () => {
     renderInline()
     expect(screen.getByLabelText('Email address')).toBeRequired()
-    expect(screen.getByLabelText(/mobile phone/i)).not.toBeRequired()
+    expect(screen.getByLabelText(/mobile phone/i)).toBeRequired()
     // The homepage form has no first-name field; adding one here would make
     // the two sites differ, which is the whole thing this package prevents.
     expect(screen.queryByLabelText(/first name/i)).toBeNull()
@@ -32,17 +32,18 @@ describe('SignupInline — matches the homepage form', () => {
   it('shows the SMS consent tick unchecked, with the terms link', () => {
     renderInline()
     expect(screen.getByRole('checkbox')).not.toBeChecked()
+    expect(screen.getByRole('checkbox')).toBeRequired()
     expect(screen.getByRole('link', { name: /Privacy & SMS terms/i })).toBeVisible()
   })
 
-  it('refuses a phone number without consent, and never calls the server', async () => {
+  it('requires consent for a phone number and never calls the server', async () => {
     const fetchSpy = vi.spyOn(globalThis, 'fetch')
     const user = userEvent.setup()
     renderInline()
     await user.type(screen.getByLabelText('Email address'), 'dana@example.com')
     await user.type(screen.getByLabelText(/mobile phone/i), '6155550134')
     await user.click(screen.getByRole('button', { name: 'Get sale alerts' }))
-    expect(await screen.findByText(/permission box/i)).toBeVisible()
+    expect(screen.getByRole('checkbox')).toBeInvalid()
     expect(fetchSpy).not.toHaveBeenCalled()
   })
 
@@ -51,6 +52,8 @@ describe('SignupInline — matches the homepage form', () => {
     const user = userEvent.setup()
     renderInline({ audienceFields: { audienceId: 'c75733484a' } })
     await user.type(screen.getByLabelText('Email address'), 'dana@example.com')
+    await user.type(screen.getByLabelText(/mobile phone/i), '6155550134')
+    await user.click(screen.getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Get sale alerts' }))
     await waitFor(() => expect(fetchSpy).toHaveBeenCalled())
     const body = fetchSpy.mock.calls[0]?.[1]?.body as FormData
@@ -66,6 +69,8 @@ describe('SignupInline — matches the homepage form', () => {
     const user = userEvent.setup()
     renderInline()
     await user.type(screen.getByLabelText('Email address'), 'dana@example.com')
+    await user.type(screen.getByLabelText(/mobile phone/i), '6155550134')
+    await user.click(screen.getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Get sale alerts' }))
     expect(await screen.findByText("You're on the list.")).toBeVisible()
   })

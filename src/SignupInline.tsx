@@ -148,13 +148,14 @@ export function SignupInline({
           <PhoneIcon />
           <input
             aria-describedby={disclosureID}
-            aria-label="Mobile phone (optional)"
+            aria-label="Mobile phone"
             autoComplete="tel"
             className="eg-signup-inline__input"
             disabled={submitting}
             inputMode="tel"
             name="phone"
-            placeholder="Mobile phone (optional)"
+            placeholder="Mobile phone"
+            required
             type="tel"
           />
         </div>
@@ -168,6 +169,7 @@ export function SignupInline({
             aria-describedby={disclosureID}
             disabled={submitting}
             name="smsConsent"
+            required
             type="checkbox"
             value="yes"
           />

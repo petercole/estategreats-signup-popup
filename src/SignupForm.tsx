@@ -190,9 +190,7 @@ export function SignupForm({
       </label>
 
       <label className="sale-alert-signup-form__field" htmlFor={`${idPrefix}-phone`}>
-        <span>
-          Mobile phone <small>(optional)</small>
-        </span>
+        <span>Mobile phone</span>
         <input
           aria-describedby={smsDisclosureID}
           autoComplete="tel"
@@ -200,6 +198,7 @@ export function SignupForm({
           id={`${idPrefix}-phone`}
           inputMode="tel"
           name="phone"
+          required
           type="tel"
         />
       </label>
@@ -209,6 +208,7 @@ export function SignupForm({
           aria-describedby={smsDisclosureID}
           disabled={submitting}
           name="smsConsent"
+          required
           type="checkbox"
           value="yes"
         />

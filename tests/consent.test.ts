@@ -12,9 +12,12 @@ describe('sms consent', () => {
     expect(SMS_DISCLOSURE_COPY).toContain('Consent is not a condition of purchase')
   })
 
-  it('accepts the two legitimate states', () => {
-    expect(smsConsentError({ phone: '', smsConsent: false })).toBeUndefined()
+  it('accepts a valid mobile number with affirmative consent', () => {
     expect(smsConsentError({ phone: '615-555-0134', smsConsent: true })).toBeUndefined()
+  })
+
+  it('requires a mobile number for every sale-alert signup', () => {
+    expect(smsConsentError({ phone: '', smsConsent: false })).toMatch(/enter the mobile number/)
   })
 
   it('refuses a phone number we were not given permission to text', () => {
