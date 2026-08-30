@@ -84,7 +84,7 @@ export function SignupInline({
   audienceFields,
   buttonLabel = 'Get sale alerts',
   className,
-  footnote = 'Email and text choices are separate. Unsubscribe anytime.',
+  footnote = 'Email and text sale alerts. Unsubscribe anytime.',
   formAction,
   heading,
   intro,

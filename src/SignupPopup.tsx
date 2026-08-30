@@ -101,7 +101,7 @@ export function SignupPopup({
   footerLink,
   formAction,
   heading = 'Be First Through the Door',
-  intro = 'Get text or email alerts for upcoming estate sales.',
+  intro = 'Get email and text alerts for upcoming estate sales.',
   onAnalyticsEvent,
   onClose,
   open: controlledOpen,

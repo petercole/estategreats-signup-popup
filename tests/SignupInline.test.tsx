@@ -27,6 +27,7 @@ describe('SignupInline — matches the homepage form', () => {
   it('uses the homepage call to action', () => {
     renderInline()
     expect(screen.getByRole('button', { name: 'Get sale alerts' })).toBeVisible()
+    expect(screen.getByText('Email and text sale alerts. Unsubscribe anytime.')).toBeVisible()
   })
 
   it('shows the SMS consent tick unchecked, with the terms link', () => {

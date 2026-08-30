@@ -24,7 +24,7 @@ Each site supplies only what legitimately differs.
 
 ## Two shapes, one implementation
 
-- **`SignupPopup`** — the modal. First name, email, optional mobile, consent,
+- **`SignupPopup`** — the modal. First name, email, required mobile and consent,
   gold "Send me sale alerts". This is what the banner button opens on
   estategreats.net and what the offers site schedules.
 - **`SignupInline`** — the homepage form. Email and mobile side by side with

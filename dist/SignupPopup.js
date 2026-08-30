@@ -35,7 +35,7 @@ function resolveSchedule(schedule) {
         return DEFAULT_SCHEDULE;
     return { ...DEFAULT_SCHEDULE, ...schedule };
 }
-export function SignupPopup({ audienceFields, buttonLabel, className, eyebrow = 'Estate Greats Sale Alerts', footerLink, formAction, heading = 'Be First Through the Door', intro = 'Get text or email alerts for upcoming estate sales.', onAnalyticsEvent, onClose, open: controlledOpen, privacyUrl, schedule, source, sourcePath, storageNamespace, style, }) {
+export function SignupPopup({ audienceFields, buttonLabel, className, eyebrow = 'Estate Greats Sale Alerts', footerLink, formAction, heading = 'Be First Through the Door', intro = 'Get email and text alerts for upcoming estate sales.', onAnalyticsEvent, onClose, open: controlledOpen, privacyUrl, schedule, source, sourcePath, storageNamespace, style, }) {
     const modalRef = useRef(null);
     const [autoOpen, setAutoOpen] = useState(false);
     const [closing, setClosing] = useState(false);
