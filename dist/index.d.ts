@@ -1,6 +1,8 @@
 export { SignupPopup } from './SignupPopup.js';
 export type { SignupPopupProps } from './SignupPopup.js';
 export { SignupForm } from './SignupForm.js';
+export { SignupInline } from './SignupInline.js';
+export type { SignupInlineProps } from './SignupInline.js';
 export type { SignupFormProps, SignupFormStatus } from './SignupForm.js';
 export { DEFAULT_SCHEDULE, isBlockedPath, isMobileViewport, useSignupPopupSchedule, } from './schedule.js';
 export type { SignupPopupSchedule, SignupPopupTrigger } from './schedule.js';

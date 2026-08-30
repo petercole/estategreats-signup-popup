@@ -22,6 +22,20 @@ success and error presentation, and the analytics event hooks.
 
 Each site supplies only what legitimately differs.
 
+## Two shapes, one implementation
+
+- **`SignupPopup`** — the modal. First name, email, optional mobile, consent,
+  gold "Send me sale alerts". This is what the banner button opens on
+  estategreats.net and what the offers site schedules.
+- **`SignupInline`** — the homepage form. Email and mobile side by side with
+  icons, a full-width rounded outline button on the navy → teal gradient, and
+  the consent tick underneath. No first-name field, because the homepage form
+  does not ask for one.
+
+Both post identical fields and share validation and submit handling
+(`useSignupSubmit`), so the two can never disagree about what is valid or what
+an error says.
+
 ## Using it
 
 ```tsx
