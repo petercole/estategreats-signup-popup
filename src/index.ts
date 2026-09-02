@@ -4,6 +4,9 @@ export { SignupForm } from './SignupForm.js'
 export { SignupInline } from './SignupInline.js'
 export type { SignupInlineProps } from './SignupInline.js'
 export type { SignupFormProps, SignupFormStatus } from './SignupForm.js'
+export { SignupDone, signupDoneHeading, signupNextSteps, signupOutcome } from './SignupDone.js'
+export type { SignupDoneProps, SignupOutcome } from './SignupDone.js'
+export type { SignupSubmission } from './useSignupSubmit.js'
 export {
   DEFAULT_SCHEDULE,
   isBlockedPath,

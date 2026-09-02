@@ -586,3 +586,98 @@
     }
   }
 }
+
+
+/* ---- Success: the fields give way to the next steps ------------------- */
+
+.sale-alert-signup-form__done,
+.eg-signup-inline__done {
+  display: grid;
+  gap: 0.85rem;
+  justify-items: start;
+  text-align: left;
+}
+
+.sale-alert-signup-form__done-mark,
+.eg-signup-inline__done-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: rgb(169 234 216 / 16%);
+  color: #a9ead8;
+}
+
+.sale-alert-signup-form__done-heading,
+.eg-signup-inline__done-heading {
+  color: #ffffff;
+  font-family: var(--font-classic-heading), Arial, sans-serif;
+  font-size: clamp(1.45rem, 3.5vw, 1.9rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.sale-alert-signup-form__done-lead,
+.eg-signup-inline__done-lead {
+  color: #a9ead8;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.sale-alert-signup-form__done-steps,
+.eg-signup-inline__done-steps {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0 0 0 1.4rem;
+  color: rgb(255 255 255 / 88%);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.sale-alert-signup-form__done-steps li::marker,
+.eg-signup-inline__done-steps li::marker {
+  color: #ffbd59;
+  font-weight: 800;
+}
+
+.sale-alert-signup-form__done-button,
+.eg-signup-inline__done-button {
+  margin-top: 0.4rem;
+  min-height: 48px;
+  padding: 0.85rem 1.6rem;
+  border: 1px solid #ffbd59;
+  border-radius: 999px;
+  background: #ffbd59;
+  color: #16163f;
+  cursor: pointer;
+  font-family: var(--font-classic-body, Montserrat), Montserrat, Arial, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sale-alert-signup-form__done-button:hover,
+.sale-alert-signup-form__done-button:focus-visible {
+  background: #ffc978;
+}
+
+/* The inline footer panel is smaller and sits in a dark card; keep it compact. */
+.eg-signup-inline__done-mark {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.eg-signup-inline__done-heading {
+  font-size: 1.2rem;
+}
+
+.eg-signup-inline__done-lead,
+.eg-signup-inline__done-steps {
+  font-size: 0.9rem;
+}

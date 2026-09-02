@@ -21,6 +21,7 @@ import { useId } from 'react'
 
 import type { SignupPopupAnalyticsHandler } from './analytics.js'
 import { SMS_DISCLOSURE_COPY, SMS_DISCLOSURE_VERSION, SMS_TERMS_URL } from './consent.js'
+import { SignupDone } from './SignupDone.js'
 import { useSignupSubmit } from './useSignupSubmit.js'
 
 export type SignupInlineProps = {
@@ -97,16 +98,25 @@ export function SignupInline({
   const idPrefix = useId()
   const disclosureID = `${idPrefix}-sms`
   const footnoteID = `${idPrefix}-footnote`
-  const { message, onSubmit, startedAt, status } = useSignupSubmit({
+  const { message, onSubmit, startedAt, status, submission } = useSignupSubmit({
     formAction,
     onAnalyticsEvent,
     onSuccess,
     source,
   })
   const submitting = status === 'submitting'
+  const rootClassName = className ? `eg-signup-inline ${className}` : 'eg-signup-inline'
+
+  if (status === 'success') {
+    return (
+      <div className={rootClassName} data-state="success">
+        <SignupDone classPrefix="eg-signup-inline" message={message} submission={submission} />
+      </div>
+    )
+  }
 
   return (
-    <div className={className ? `eg-signup-inline ${className}` : 'eg-signup-inline'}>
+    <div className={rootClassName}>
       {heading ? <p className="eg-signup-inline__heading">{heading}</p> : null}
       {intro ? <p className="eg-signup-inline__intro">{intro}</p> : null}
       <form className="eg-signup-inline__form" method="post" onSubmit={onSubmit}>
@@ -181,7 +191,7 @@ export function SignupInline({
         <p
           aria-live="polite"
           className="eg-signup-inline__status"
-          data-state={status === 'success' ? 'success' : status === 'error' ? 'error' : ''}
+          data-state={status === 'error' ? 'error' : ''}
         >
           {message}
         </p>

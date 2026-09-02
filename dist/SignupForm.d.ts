@@ -1,5 +1,6 @@
 import type { SignupPopupAnalyticsHandler } from './analytics.js';
-export type SignupFormStatus = 'idle' | 'submitting' | 'success' | 'error';
+import { type SignupStatus } from './useSignupSubmit.js';
+export type SignupFormStatus = SignupStatus;
 export type SignupFormProps = {
     /** Where the form POSTs. Each site supplies its own server route. */
     formAction: string;
@@ -16,8 +17,12 @@ export type SignupFormProps = {
     /** Overrides the submit button label. */
     buttonLabel?: string;
     onAnalyticsEvent?: SignupPopupAnalyticsHandler;
-    /** Called after a successful signup, so the popup can close and record
-     *  permanent suppression. */
+    /** Called after a successful signup, so the popup can record permanent
+     *  suppression and swap its own heading for the next steps. */
     onSuccess?: () => void;
+    /** Renders a closing button on the success panel (the popup passes its
+     *  close handler); inline surfaces leave it out. */
+    onDone?: () => void;
+    doneLabel?: string;
 };
-export declare function SignupForm({ audienceFields, buttonLabel, formAction, onAnalyticsEvent, onSuccess, privacyUrl, source, sourcePath, }: SignupFormProps): import("react").JSX.Element;
+export declare function SignupForm({ audienceFields, buttonLabel, doneLabel, formAction, onAnalyticsEvent, onDone, onSuccess, privacyUrl, source, sourcePath, }: SignupFormProps): import("react").JSX.Element;

@@ -22,12 +22,14 @@
  *   { success: boolean, message?: string, eventId?: string, redirectTo?: string }
  */
 
-import { useId, useRef, useState } from 'react'
+import { useId, useRef } from 'react'
 
 import type { SignupPopupAnalyticsHandler } from './analytics.js'
-import { SMS_DISCLOSURE_COPY, SMS_DISCLOSURE_VERSION, SMS_TERMS_URL, smsConsentError } from './consent.js'
+import { SMS_DISCLOSURE_COPY, SMS_DISCLOSURE_VERSION, SMS_TERMS_URL } from './consent.js'
+import { SignupDone } from './SignupDone.js'
+import { useSignupSubmit, type SignupStatus } from './useSignupSubmit.js'
 
-export type SignupFormStatus = 'idle' | 'submitting' | 'success' | 'error'
+export type SignupFormStatus = SignupStatus
 
 export type SignupFormProps = {
   /** Where the form POSTs. Each site supplies its own server route. */
@@ -45,16 +47,22 @@ export type SignupFormProps = {
   /** Overrides the submit button label. */
   buttonLabel?: string
   onAnalyticsEvent?: SignupPopupAnalyticsHandler
-  /** Called after a successful signup, so the popup can close and record
-   *  permanent suppression. */
+  /** Called after a successful signup, so the popup can record permanent
+   *  suppression and swap its own heading for the next steps. */
   onSuccess?: () => void
+  /** Renders a closing button on the success panel (the popup passes its
+   *  close handler); inline surfaces leave it out. */
+  onDone?: () => void
+  doneLabel?: string
 }
 
 export function SignupForm({
   audienceFields,
   buttonLabel = 'Send me sale alerts',
+  doneLabel,
   formAction,
   onAnalyticsEvent,
+  onDone,
   onSuccess,
   privacyUrl = SMS_TERMS_URL,
   source,
@@ -64,77 +72,25 @@ export function SignupForm({
   const privacyID = `${idPrefix}-privacy`
   const smsDisclosureID = `${idPrefix}-sms-disclosure`
   const formRef = useRef<HTMLFormElement>(null)
-  // Set once, on mount, and refreshed after a successful send. Both servers
-  // read it to reject submissions that arrive impossibly fast.
-  const startedAtRef = useRef<string>(String(Date.now()))
-  const [status, setStatus] = useState<SignupFormStatus>('idle')
-  const [message, setMessage] = useState('')
-
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const form = event.currentTarget
-    const formData = new FormData(form)
-    const smsConsent = formData.get('smsConsent') === 'yes'
-    const phone = String(formData.get('phone') || '').trim()
-
-    const consentError = smsConsentError({ phone, smsConsent })
-    if (consentError) {
-      setStatus('error')
-      setMessage(consentError)
-      onAnalyticsEvent?.({ name: 'signup_popup_submit_error', reason: 'sms_consent', source })
-      form.querySelector<HTMLElement>(`[name="${smsConsent ? 'phone' : 'smsConsent'}"]`)?.focus()
-      return
-    }
-
-    onAnalyticsEvent?.({ name: 'signup_popup_submit_attempt', source })
-    setStatus('submitting')
-    setMessage('Sending…')
-
-    try {
-      const response = await fetch(formAction, {
-        body: formData,
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json' },
-        method: 'POST',
-      })
-      const result = (await response.json().catch(() => null)) as {
-        eventId?: string
-        message?: string
-        redirectTo?: string
-        success?: boolean
-      } | null
-
-      if (!response.ok || !result?.success) {
-        throw new Error(result?.message || 'We could not send this form. Please try again.')
-      }
-
-      onAnalyticsEvent?.({
-        name: 'signup_popup_signup',
-        eventId: result.eventId,
-        smsConsent,
-        source,
-      })
-
-      if (result.redirectTo) {
-        window.location.assign(result.redirectTo)
-        return
-      }
-
-      form.reset()
-      startedAtRef.current = String(Date.now())
-      setStatus('success')
-      setMessage(result.message || 'Thank you. Your message was received.')
-      onSuccess?.()
-    } catch (error) {
-      const text =
-        error instanceof Error ? error.message : 'We could not send this form. Please try again.'
-      onAnalyticsEvent?.({ name: 'signup_popup_submit_error', reason: 'submission_failed', source })
-      setStatus('error')
-      setMessage(text)
-    }
-  }
-
+  const { message, onSubmit, startedAt, status, submission } = useSignupSubmit({
+    formAction,
+    onAnalyticsEvent,
+    onSuccess,
+    source,
+  })
   const submitting = status === 'submitting'
+
+  if (status === 'success') {
+    return (
+      <SignupDone
+        classPrefix="sale-alert-signup-form"
+        doneLabel={doneLabel}
+        message={message}
+        onDone={onDone}
+        submission={submission}
+      />
+    )
+  }
 
   return (
     <form
@@ -148,7 +104,7 @@ export function SignupForm({
       <input name="source" type="hidden" value={source} readOnly />
       <input name="sourcePath" type="hidden" value={sourcePath} readOnly />
       <input name="smsDisclosureVersion" type="hidden" value={SMS_DISCLOSURE_VERSION} readOnly />
-      <input defaultValue={startedAtRef.current} name="startedAt" type="hidden" />
+      <input defaultValue={startedAt} name="startedAt" type="hidden" />
       {Object.entries(audienceFields ?? {}).map(([name, value]) => (
         <input key={name} name={name} type="hidden" value={value} readOnly />
       ))}
@@ -224,7 +180,7 @@ export function SignupForm({
         aria-live="polite"
         className="sale-alert-signup-form__status"
         data-eg-form-status=""
-        data-state={status === 'success' ? 'success' : status === 'error' ? 'error' : ''}
+        data-state={status === 'error' ? 'error' : ''}
       >
         {message}
       </p>

@@ -48,6 +48,7 @@ export function SignupPopup({ audienceFields, buttonLabel, className, eyebrow = 
     //   suppressed — dismissed recently, or signed up (survives the session)
     //   shownThisSession — already asked once in this tab (dies with it)
     const [suppressed, setSuppressed] = useState(true);
+    const [signedUp, setSignedUp] = useState(false);
     useEffect(() => {
         if (!resolvedSchedule)
             return;
@@ -97,6 +98,7 @@ export function SignupPopup({ audienceFields, buttonLabel, className, eyebrow = 
     const onSignupSuccess = useCallback(() => {
         recordSignup(storageNamespace);
         setSuppressed(true);
+        setSignedUp(true);
     }, [storageNamespace]);
     useEffect(() => {
         if (!open)
@@ -138,6 +140,6 @@ export function SignupPopup({ audienceFields, buttonLabel, className, eyebrow = 
     const modal = (_jsx("div", { className: className ? `sale-alert-signup-modal ${className}` : 'sale-alert-signup-modal', style: style, "data-state": closing ? 'closing' : open ? 'open' : undefined, hidden: !visible, onMouseDown: (event) => {
             if (event.target === event.currentTarget)
                 requestClose('dismissed');
-        }, ref: modalRef, children: _jsxs("section", { "aria-labelledby": "sale-alert-signup-modal-title", "aria-modal": "true", className: "sale-alert-signup-modal__dialog", id: "sale-alert-signup-modal", role: "dialog", children: [_jsx("button", { "aria-label": "Close sale alerts signup", className: "sale-alert-signup-modal__close", onClick: () => requestClose('dismissed'), type: "button", children: _jsx("span", { "aria-hidden": "true", children: "\u00D7" }) }), _jsx("p", { className: "sale-alert-signup-modal__eyebrow", children: eyebrow }), _jsx("h2", { id: "sale-alert-signup-modal-title", children: heading }), _jsx("p", { className: "sale-alert-signup-modal__intro", children: intro }), _jsx(SignupForm, { audienceFields: audienceFields, buttonLabel: buttonLabel, formAction: formAction, onAnalyticsEvent: onAnalyticsEvent, onSuccess: onSignupSuccess, privacyUrl: privacyUrl, source: source, sourcePath: sourcePath }), footerLink ? (_jsx("a", { className: "sale-alert-signup-modal__page-link", href: footerLink.href, onClick: () => requestClose('dismissed'), children: footerLink.label })) : null] }) }));
+        }, ref: modalRef, children: _jsxs("section", { "aria-labelledby": "sale-alert-signup-modal-title", "aria-modal": "true", className: "sale-alert-signup-modal__dialog", id: "sale-alert-signup-modal", role: "dialog", children: [_jsx("button", { "aria-label": "Close sale alerts signup", className: "sale-alert-signup-modal__close", onClick: () => requestClose('dismissed'), type: "button", children: _jsx("span", { "aria-hidden": "true", children: "\u00D7" }) }), _jsx("p", { className: "sale-alert-signup-modal__eyebrow", children: eyebrow }), _jsx("h2", { id: "sale-alert-signup-modal-title", hidden: signedUp, children: heading }), signedUp ? null : _jsx("p", { className: "sale-alert-signup-modal__intro", children: intro }), _jsx(SignupForm, { audienceFields: audienceFields, buttonLabel: buttonLabel, formAction: formAction, onAnalyticsEvent: onAnalyticsEvent, onDone: () => requestClose('signed-up'), onSuccess: onSignupSuccess, privacyUrl: privacyUrl, source: source, sourcePath: sourcePath }), footerLink && !signedUp ? (_jsx("a", { className: "sale-alert-signup-modal__page-link", href: footerLink.href, onClick: () => requestClose('dismissed'), children: footerLink.label })) : null] }) }));
     return canUsePortal ? createPortal(modal, document.body) : null;
 }

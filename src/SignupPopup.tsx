@@ -126,6 +126,7 @@ export function SignupPopup({
   //   suppressed — dismissed recently, or signed up (survives the session)
   //   shownThisSession — already asked once in this tab (dies with it)
   const [suppressed, setSuppressed] = useState(true)
+  const [signedUp, setSignedUp] = useState(false)
   useEffect(() => {
     if (!resolvedSchedule) return
     setSuppressed(
@@ -186,6 +187,7 @@ export function SignupPopup({
   const onSignupSuccess = useCallback(() => {
     recordSignup(storageNamespace)
     setSuppressed(true)
+    setSignedUp(true)
   }, [storageNamespace])
 
   useEffect(() => {
@@ -260,19 +262,24 @@ export function SignupPopup({
           <span aria-hidden="true">×</span>
         </button>
         <p className="sale-alert-signup-modal__eyebrow">{eyebrow}</p>
-        <h2 id="sale-alert-signup-modal-title">{heading}</h2>
-        <p className="sale-alert-signup-modal__intro">{intro}</p>
+        {/* Once the server has the signup, the dialog IS the next steps: the
+            heading and intro that sold the form step aside for the panel. */}
+        <h2 id="sale-alert-signup-modal-title" hidden={signedUp}>
+          {heading}
+        </h2>
+        {signedUp ? null : <p className="sale-alert-signup-modal__intro">{intro}</p>}
         <SignupForm
           audienceFields={audienceFields}
           buttonLabel={buttonLabel}
           formAction={formAction}
           onAnalyticsEvent={onAnalyticsEvent}
+          onDone={() => requestClose('signed-up')}
           onSuccess={onSignupSuccess}
           privacyUrl={privacyUrl}
           source={source}
           sourcePath={sourcePath}
         />
-        {footerLink ? (
+        {footerLink && !signedUp ? (
           <a
             className="sale-alert-signup-modal__page-link"
             href={footerLink.href}

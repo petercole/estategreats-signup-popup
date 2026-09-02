@@ -14,12 +14,14 @@ export function useSignupSubmit({ formAction, onAnalyticsEvent, onSuccess, sourc
     const startedAtRef = useRef(String(Date.now()));
     const [status, setStatus] = useState('idle');
     const [message, setMessage] = useState('');
+    const [submission, setSubmission] = useState(null);
     const onSubmit = useCallback(async (event) => {
         event.preventDefault();
         const form = event.currentTarget;
         const formData = new FormData(form);
         const smsConsent = formData.get('smsConsent') === 'yes';
         const phone = String(formData.get('phone') || '').trim();
+        const email = String(formData.get('email') || '').trim();
         const consentError = smsConsentError({ phone, smsConsent });
         if (consentError) {
             setStatus('error');
@@ -54,6 +56,7 @@ export function useSignupSubmit({ formAction, onAnalyticsEvent, onSuccess, sourc
             }
             form.reset();
             startedAtRef.current = String(Date.now());
+            setSubmission({ email, phone, smsConsent });
             setStatus('success');
             setMessage(result.message || 'Thank you. Your message was received.');
             onSuccess?.();
@@ -69,5 +72,5 @@ export function useSignupSubmit({ formAction, onAnalyticsEvent, onSuccess, sourc
             setMessage(text);
         }
     }, [formAction, onAnalyticsEvent, onSuccess, source]);
-    return { message, onSubmit, startedAt: startedAtRef.current, status };
+    return { message, onSubmit, startedAt: startedAtRef.current, status, submission };
 }

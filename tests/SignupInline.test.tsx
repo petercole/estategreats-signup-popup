@@ -74,5 +74,26 @@ describe('SignupInline — matches the homepage form', () => {
     await user.click(screen.getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Get sale alerts' }))
     expect(await screen.findByText("You're on the list.")).toBeVisible()
+
+    // The inline card swaps its fields for the next steps.
+    expect(screen.queryByLabelText('Email address')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Get sale alerts' })).toBeNull()
+    expect(screen.getByText('You’re on the list!')).toBeVisible()
+    const steps = screen.getAllByRole('listitem').map((item) => item.textContent)
+    expect(steps.some((step) => step?.includes('welcome text at 6155550134'))).toBe(true)
+    expect(screen.queryByRole('button', { name: 'Done' })).toBeNull()
+  })
+
+  it('tells an existing subscriber there is nothing more to do', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      ok({ message: "You're already on the list — thanks!", success: true }),
+    )
+    const user = userEvent.setup()
+    renderInline()
+    await user.type(screen.getByLabelText('Email address'), 'dana@example.com')
+    await user.type(screen.getByLabelText(/mobile phone/i), '6155550134')
+    await user.click(screen.getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Get sale alerts' }))
+    expect(await screen.findByText('You’re already on the list')).toBeVisible()
   })
 })

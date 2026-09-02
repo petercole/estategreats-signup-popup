@@ -170,6 +170,49 @@ describe('SignupPopup — submission states', () => {
     expect(onAnalyticsEvent).toHaveBeenCalledWith(
       expect.objectContaining({ eventId: 'evt_1', name: 'signup_popup_signup', smsConsent: true }),
     )
+
+    // The dialog becomes the next steps: no fields, no sales pitch, a clear
+    // heading, the SMS step because consent was given, and a way out.
+    expect(screen.queryByLabelText(/first name/i)).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Send me sale alerts' })).toBeNull()
+    expect(screen.queryByText('Get email and text alerts for upcoming estate sales.')).toBeNull()
+    expect(screen.getByText('You’re on the list!')).toBeVisible()
+    const steps = screen.getAllByRole('listitem').map((item) => item.textContent)
+    expect(steps.some((step) => step?.includes('welcome text at 6155550134'))).toBe(true)
+    expect(steps.some((step) => step?.includes('info@estategreats.net'))).toBe(true)
+  })
+
+  it('asks the shopper to confirm their email when the list needs it, and Done closes the popup', async () => {
+    const onClose = vi.fn()
+    const onAnalyticsEvent = vi.fn()
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      jsonResponse({
+        message: 'Almost done! Check your inbox to confirm your Estate Greats sale alerts.',
+        success: true,
+      }),
+    )
+    const user = userEvent.setup()
+    renderPopup({ onAnalyticsEvent, onClose, open: true })
+
+    await user.type(screen.getByLabelText(/first name/i), 'Dana')
+    await user.type(screen.getByLabelText(/email address/i), 'dana@example.com')
+    await user.type(screen.getByLabelText(/mobile phone/i), '6155550134')
+    await user.click(screen.getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Send me sale alerts' }))
+
+    expect(await screen.findByText('Almost done!')).toBeVisible()
+    const steps = screen.getAllByRole('listitem').map((item) => item.textContent)
+    expect(steps[0]).toContain('email we just sent to dana@example.com')
+    expect(steps[0]).toContain('confirm')
+    expect(screen.getByRole('dialog').querySelector('h2')?.hidden).toBe(true)
+
+    await user.click(screen.getByRole('button', { name: 'Done' }))
+    expect(onClose).toHaveBeenCalledTimes(1)
+    // Closing from the success panel is a signup, not a dismissal.
+    expect(readSuppression(NS).signedUp).toBe(true)
+    expect(onAnalyticsEvent).not.toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'signup_popup_dismissed' }),
+    )
   })
 
   it('surfaces the server message on failure and does not suppress', async () => {
