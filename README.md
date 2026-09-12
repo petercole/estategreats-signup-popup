@@ -12,8 +12,8 @@ The Estate Greats sale-alert signup popup. One implementation, two sites:
 | estategreats.net | `petercole/estate-greats-website` | `src/components/ActiveSaleBanner/Client.tsx` |
 | offers.estategreats.net | `petercole/eg-staff-portal` | `app/offers/layout.tsx` |
 
-The package owns everything a visitor sees or feels: markup, styling, the navy
-dialog with its teal gradient wash, typography and spacing, field layout, the
+The package owns everything a visitor sees or feels: markup, styling, the slate-blue
+to deep-teal dialog gradient, typography and spacing, field layout, the
 SMS disclosure and its consent rules, the rounded gold CTA and its states, the
 overlay and close control, entrance and exit animation, responsive behavior,
 focus trap and focus restoration, Escape handling, scroll locking,
