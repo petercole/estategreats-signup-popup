@@ -33,7 +33,7 @@
 }
 
 .sale-alert-signup-modal__dialog {
-  background: linear-gradient(145deg, rgb(2 131 164 / 15%), transparent 46%), #131a3f;
+  background: linear-gradient(110deg, #1c304f 0%, #1c405b 50%, #145a70 100%);
   border-radius: 16px;
   box-shadow:
     0 28px 80px rgb(0 0 0 / 42%),
@@ -136,7 +136,7 @@
 }
 
 .sale-alert-signup-form__field small {
-  color: rgb(255 255 255 / 62%);
+  color: rgb(255 255 255 / 72%);
   font: inherit;
   font-weight: 500;
 }
@@ -262,7 +262,7 @@
 }
 
 .sale-alert-signup-form__privacy {
-  color: rgb(255 255 255 / 58%);
+  color: rgb(255 255 255 / 72%);
 }
 
 .sale-alert-signup-modal__page-link {
