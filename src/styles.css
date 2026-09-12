@@ -184,14 +184,14 @@
 }
 
 .sale-alert-signup-form__sms-consent a {
-  color: #ffcf84;
+  color: #ffcf84 !important;
   font-weight: 700;
   text-underline-offset: 0.16rem;
 }
 
 .sale-alert-signup-form__sms-consent a:hover,
 .sale-alert-signup-form__sms-consent a:focus-visible {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 .sale-alert-signup-form__submit {
